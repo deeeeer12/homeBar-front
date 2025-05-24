@@ -4,12 +4,12 @@
       <text class="admin-title">📦 订单管理后台</text>
     </view>
 
-    <view v-if="orders.length > 0" class="order-list">
+    <view v-if="orders && orders.length > 0" class="order-list">
       <view v-for="order in orders" :key="order.id" class="order-card">
         <view class="order-info">
           <text class="order-id">订单号：{{ order.id }}</text>
           <text class="order-user">用户名：{{ order.userName }}</text>
-          <text class="order-time">时间：{{ order.createdAt }}</text>
+          <text class="order-time">时间：{{ order.createdAt.replace('T', ' ') }}</text>
           <text class="order-status">状态：{{ order.status }}</text>
         </view>
 
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import config from '@/config.js'
 export default {
   data() {
     return {
@@ -64,7 +65,7 @@ export default {
   methods: {
     fetchAllOrders() {
       uni.request({
-        url: 'http://localhost:8080/homebar/admin/api/getAllOrders',
+        url: `${config.BASE_URL}/homebar/admin/api/getAllOrders`,
         method: 'GET',
         header: {
           'Authorization': uni.getStorageSync('token')
@@ -90,7 +91,7 @@ export default {
       if (!this.selectedOrder) return
   
       uni.request({
-        url: 'http://localhost:8080/homebar/admin/api/updateOrderStatus',
+        url: `${config.BASE_URL}/homebar/admin/api/updateOrderStatus`,
         method: 'POST',
         data: {
           orderId: this.selectedOrder.id,
@@ -128,7 +129,7 @@ export default {
         success: (res) => {
           if (res.confirm) {
             uni.request({
-              url: `http://localhost:8080/homebar/admin/api/deleteOrder?orderId=${orderId}`,
+              url: `${config.BASE_URL}/homebar/admin/api/deleteOrder?orderId=${orderId}`,
               method: 'DELETE',
               header: {
                 'Authorization': uni.getStorageSync('token')

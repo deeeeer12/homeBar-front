@@ -13,38 +13,49 @@
       }
     },
     {
-      "path": "pages/register/register",
-      "style": {
-        "navigationBarTitleText": "注册页"
-      }
-    },
-    {
       "path": "pages/mine/mine",
       "style": {
         "navigationBarTitleText": "我的"
       }
-    },
+    },    
     {
-      "path": "pages/admin/admin",
+      "path": "pages/auth/index",
       "style": {
-        "navigationBarTitleText": "管理员界面"
+        "navigationBarTitleText": "注册"
       }
     }
   ],
   "tabBar": {
+    "color": "#b8b8b8",
+    "selectedColor": "#ffd700",
+    "backgroundColor": "#1a1a1a",
+    "borderStyle": "white",
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页"
-      },
-      {
-        "pagePath": "pages/cart/cart",
-        "text": "购物车"
+        "text": "首页",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home-active.png"
       },
       {
         "pagePath": "pages/mine/mine",
-        "text": "我的"
+        "text": "我的",
+        "iconPath": "static/tabbar/user.png",
+        "selectedIconPath": "static/tabbar/user-active.png"
       }
     ]
-  }
+  },
+  "subPackages": [
+    {
+      "root": "pages/admin",
+      "pages": [
+        {
+          "path": "admin",
+          "style": {
+            "navigationBarTitleText": "管理员界面"
+          }
+        }
+      ]
+    }
+  ]
 }

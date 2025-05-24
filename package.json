@@ -70,6 +70,7 @@
     "@dcloudio/uni-quickapp-webview": "^2.0.2-4060420250429001",
     "@dcloudio/uni-stacktracey": "^2.0.2-4060420250429001",
     "@dcloudio/uni-stat": "^2.0.2-4060420250429001",
+    "@dcloudio/uni-ui": "^1.5.7",
     "@vue/shared": "^3.0.0",
     "core-js": "^3.8.3",
     "flyio": "^0.6.2",
@@ -95,6 +96,7 @@
     "cross-env": "^7.0.2",
     "jest": "^25.4.0",
     "postcss-comment": "^2.0.0",
+    "sass": "^1.89.0",
     "vue-template-compiler": ">= 2.6.14 < 2.7"
   },
   "browserslist": [

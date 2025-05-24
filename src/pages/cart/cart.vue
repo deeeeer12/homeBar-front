@@ -11,7 +11,9 @@
           <text class="item-name">{{ item.name }}</text>
           <text class="item-desc">{{ item.description }}</text>
         </view>
-        <button class="delete-btn" @click="deleteDish(item.id)">🗑️</button>
+        <button class="delete-btn" @click="deleteDish(item.id)" aria-label="删除">
+          <text class="delete-icon">🙅</text>
+        </button>
       </view>
 
       <view class="order-button-container">
@@ -21,12 +23,14 @@
 
     <view v-else class="empty">
       <text>🕳 暂无菜品，请先去选择！</text>
-      <button type="primary" @click="goToMenu">去菜单</button>
+      <button type="primary" @click="goToMenu">继续点餐</button>
+      <button type="primary" @click="goToMine">查看订单</button>
     </view>
   </view>
 </template>
 
 <script>
+import config from '@/config.js'
 export default {
   data() {
     return {
@@ -42,7 +46,7 @@ export default {
       }
 
       uni.request({
-        url: `http://localhost:8080/homebar/client/api/getCartInfo?openId=${openId}`,
+        url: `${config.BASE_URL}/homebar/client/api/getCartInfo?openId=${openId}`,
         method: 'GET',
         header: {
           'Authorization': uni.getStorageSync('token')
@@ -67,7 +71,7 @@ export default {
       }
 
       uni.request({
-        url: `http://localhost:8080/homebar/client/api/takeOrder?userid=${openId}`,
+        url: `${config.BASE_URL}/homebar/client/api/takeOrder?userid=${openId}`,
         method: 'POST',
         header: {
           'Authorization': uni.getStorageSync('token')
@@ -93,7 +97,7 @@ export default {
       }
 
       uni.request({
-        url: `http://localhost:8080/homebar/client/api/delCartDish`,
+        url: `${config.BASE_URL}/homebar/client/api/delCartDish`,
         method: 'POST',
         data: {
           openId: openId,
@@ -120,6 +124,11 @@ export default {
       uni.switchTab({
         url: '/pages/index/index'
       })
+    },
+    goToMine() {
+      uni.switchTab({
+        url: '/pages/mine/mine'
+      })
     }
   },
   onShow() {
@@ -131,7 +140,7 @@ export default {
 <style scoped>
 .cart-container {
   padding: 32rpx;
-  background-color: #f2f4f5;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
   min-height: 100vh;
   box-sizing: border-box;
 }
@@ -139,12 +148,16 @@ export default {
 .cart-header {
   text-align: center;
   margin-bottom: 40rpx;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid rgba(255, 255, 255, 0.1);
 }
 
 .cart-title {
-  font-size: 42rpx;
+  font-size: 48rpx;
   font-weight: bold;
-  color: #1f1f1f;
+  color: #ffd700;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
+  letter-spacing: 4rpx;
 }
 
 .cart-list {
@@ -155,11 +168,19 @@ export default {
 
 .cart-item {
   display: flex;
-  background-color: #ffffff;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 24rpx;
   padding: 24rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
-  align-items: center;
+  box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.2);
+  gap: 24rpx;
+  backdrop-filter: blur(10px);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.cart-item:active {
+  transform: scale(0.98);
 }
 
 .item-image {
@@ -167,8 +188,8 @@ export default {
   height: 160rpx;
   border-radius: 16rpx;
   object-fit: cover;
-  margin-right: 24rpx;
-  background-color: #eee;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
 }
 
 .item-info {
@@ -176,26 +197,47 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8rpx;
+  gap: 12rpx;
 }
 
 .item-name {
   font-size: 34rpx;
   font-weight: 600;
-  color: #262626;
+  color: #ffd700;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
 }
 
 .item-desc {
   font-size: 28rpx;
-  color: #8c8c8c;
+  color: #b8b8b8;
+  line-height: 1.4;
 }
 
 .delete-btn {
-  background-color: transparent;
+  background: rgba(255, 77, 79, 0.1);
+  border: 1.5rpx solid #ff4d4f;
+  border-radius: 12rpx;
+  padding: 12rpx 20rpx;
   color: #ff4d4f;
-  font-size: 40rpx;
-  border: none;
-  padding: 0 12rpx;
+  font-size: 28rpx;
+  line-height: 28rpx;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}
+
+.delete-btn:hover {
+  background: rgba(255, 77, 79, 0.2);
+  transform: scale(1.05);
+}
+
+.delete-btn:active {
+  background: rgba(255, 77, 79, 0.3);
+  transform: scale(0.95);
 }
 
 .order-button-container {
@@ -204,21 +246,46 @@ export default {
 }
 
 button[type="primary"] {
-  background-color: #1677ff;
+  background: linear-gradient(45deg, #ffd700, #ffa500);
   border-radius: 24rpx;
-  font-size: 30rpx;
-  padding: 16rpx 40rpx;
-  color: #fff;
+  font-size: 32rpx;
+  padding: 20rpx 48rpx;
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(255, 215, 0, 0.3);
+  border: none;
+  transition: transform 0.3s ease;
+}
+
+button[type="primary"]:active {
+  transform: scale(0.98);
 }
 
 .empty {
   text-align: center;
-  margin-top: 100rpx;
-  color: #8c8c8c;
-  font-size: 30rpx;
+  margin-top: 120rpx;
+  color: #b8b8b8;
+  font-size: 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40rpx;
+}
+
+.empty text {
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.3);
 }
 
 .empty button {
-  margin-top: 30rpx;
+  margin-top: 20rpx;
+  width: 80%;
+  max-width: 400rpx;
+}
+
+.empty button + button {
+  margin-top: 20rpx;
+  background: linear-gradient(45deg, #4a4a4a, #2c2c2c);
+  color: #ffd700;
+  border: 1rpx solid rgba(255, 215, 0, 0.3);
 }
 </style>

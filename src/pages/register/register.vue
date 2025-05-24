@@ -17,6 +17,7 @@
 
 
 <script>
+import config from '@/config.js'
 export default {
   data() {
     return {
@@ -39,7 +40,7 @@ export default {
       }
     
       uni.request({
-        url: 'http://localhost:8080/homebar/client/api/register',
+        url: `${config.BASE_URL}/homebar/client/api/register`,
         method: 'POST',
         data: {
           id: this.openid,

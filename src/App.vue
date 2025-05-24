@@ -1,7 +1,13 @@
 <script>
+import config from '@/config.js'
+import Vue from 'vue'
+
+Vue.prototype.$eventBus = new Vue()  // 添加全局事件总线
+
 export default {
   onLaunch() {
     console.log('App Launch');
+    console.log(config.BASE_URL)
 
     // 使用 uni.login 进行微信小程序登录
     uni.login({
@@ -12,7 +18,7 @@ export default {
 
         // 调用后端登录接口
         uni.request({
-          url: 'http://localhost:8080/homebar/client/api/wxLogin', // 替换为你的实际地址
+          url: `${config.BASE_URL}/homebar/client/api/wxLogin`,
           method: 'POST',
           data: { code },
           success: (res) => {
@@ -24,12 +30,16 @@ export default {
 
               uni.setStorageSync('token', token);
               uni.setStorageSync('userId', openid);
+
+              // 登录成功后广播事件
+              this.$eventBus.$emit('login-success');
+
               console.log('登录成功，token 已保存');
             } else if (res.data.status === "404") {
               const openid = res.data.openid;
               console.log('用户未注册，跳转注册页面');
               uni.navigateTo({
-                url: `/pages/register/register?openid=${encodeURIComponent(openid)}`
+                url: `/pages/auth/index?openid=${encodeURIComponent(openid)}`
               });
             } else {
               console.error('登录失败：', res.data.msg);

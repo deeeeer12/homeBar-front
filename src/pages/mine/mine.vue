@@ -1,7 +1,6 @@
 <template>
   <view class="mine-container">
     <view class="mine-header">
-      <image class="avatar" :src="avatarUrl" mode="aspectFill"></image>
       <text class="mine-title">我的订单</text>
     </view>
 
@@ -42,12 +41,13 @@ export default {
   data() {
     return {
       orders: [],
-      isAdmin: false
+      isAdmin: false,
+      avatarUrl: ''
     }
   },
   methods: {
     fetchOrders() {
-      const openId = uni.getStorageSync('userid')
+      const openId = uni.getStorageSync('userId')
       if (!openId) {
         uni.showToast({ title: '用户未登录', icon: 'none' })
         return
@@ -72,7 +72,7 @@ export default {
       })
     },    
     fetchUserInfo() {
-      const openId = uni.getStorageSync('userid')
+      const openId = uni.getStorageSync('userId')
       if (!openId) return
       uni.request({
         url: `${config.BASE_URL}/homebar/client/api/getUserRole?openId=${openId}`,
@@ -102,6 +102,7 @@ export default {
   onShow() {
     this.fetchOrders()
     this.fetchUserInfo()
+    this.avatarUrl = uni.getStorageSync('avatarUrl') || ''
   }
 }
 </script>

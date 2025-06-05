@@ -72,7 +72,7 @@ import config from '@/config.js'
 export default {
   data() {
     return {
-      categories: ['全部', '主食', '饮品'],
+      categories: ['全部', '经典', 'Jay', 'JJ', '陶喆', '网红款'],
       currentTab: 0,
       dishes: [],
       showModal: false,
@@ -82,9 +82,17 @@ export default {
   computed: {
     filteredDishes() {
       const category = this.categories[this.currentTab]
-      return category === '全部'
-        ? this.dishes
-        : this.dishes.filter(d => d.category === category)
+      if (category === '全部') {
+        return this.dishes
+      }
+      const typeMap = {
+        '经典': 1,
+        'Jay': 2,
+        'JJ': 3,
+        '陶喆': 4,
+        '网红款': 5
+      }
+      return this.dishes.filter(d => d.type === typeMap[category])
     }
   },
   methods: {
@@ -101,7 +109,7 @@ export default {
         },
         data: {
           dishId: dish.id,
-          openId: uni.getStorageSync('userid')
+          openId: uni.getStorageSync('userId')
         },
         success: (res) => {
           if (res.data.status === 200) {
@@ -160,7 +168,8 @@ export default {
             this.dishes = res.data.data.map(d => ({
               id: d.id,
               name: d.name,
-              category: this.mapCategory(d.category),
+              category: d.category,
+              type: d.type,
               image: d.imageUrl
             }))
           }
@@ -169,13 +178,6 @@ export default {
           uni.showToast({ title: '获取菜单失败', icon: 'none' })
         }
       })
-    },
-    mapCategory(code) {
-      const map = {
-        '1': '主食',
-        '2': '饮品'
-      }
-      return map[code] || '其他'
     },
     showDishDetail(dishId) {
       uni.request({
@@ -282,22 +284,92 @@ export default {
 
 .tab-bar {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   background: rgba(255, 255, 255, 0.05);
-  padding: 16rpx;
-  margin-bottom: 30rpx;
+  padding: 20rpx;
+  margin: 20rpx 0 40rpx;
   border-radius: 20rpx;
   backdrop-filter: blur(10px);
   border: 1rpx solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 16rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.tab-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent,
+    rgba(255, 215, 0, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+.tab-bar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent,
+    rgba(255, 215, 0, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite reverse;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .tab-item {
-  padding: 16rpx 40rpx;
-  font-size: 28rpx;
+  padding: 16rpx 24rpx;
+  font-size: 26rpx;
   border-radius: 40rpx;
   color: #b8b8b8;
   background: rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  flex: 1;
+  text-align: center;
+  min-width: 120rpx;
+  position: relative;
+  overflow: hidden;
+  border: 1rpx solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.tab-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, 
+    rgba(255, 215, 0, 0.1),
+    rgba(255, 165, 0, 0.1)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tab-item:active {
+  transform: scale(0.95);
 }
 
 .tab-item.active {
@@ -305,6 +377,48 @@ export default {
   color: #000;
   font-weight: bold;
   box-shadow: 0 4rpx 12rpx rgba(255, 215, 0, 0.3);
+  border: none;
+  animation: pulse 2s infinite;
+}
+
+.tab-item.active::before {
+  opacity: 1;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 4rpx 12rpx rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 4rpx 20rpx rgba(255, 215, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 4rpx 12rpx rgba(255, 215, 0, 0.3);
+  }
+}
+
+.tab-item:hover::before {
+  opacity: 0.5;
+}
+
+/* 添加滚动条样式 */
+::-webkit-scrollbar {
+  width: 6rpx;
+  height: 6rpx;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3rpx;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, #ffd700, #ffa500);
+  border-radius: 3rpx;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, #ffa500, #ffd700);
 }
 
 .dish-list {

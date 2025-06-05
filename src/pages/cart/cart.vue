@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     fetchCartData() {
-      const openId = uni.getStorageSync('userid')
+      const openId = uni.getStorageSync('userId')
       if (!openId) {
         uni.showToast({ title: '用户未登录', icon: 'none' })
         return
@@ -64,7 +64,7 @@ export default {
       })
     },
     submitOrder() {
-      const openId = uni.getStorageSync('userid')
+      const openId = uni.getStorageSync('userId')
       if (!openId) {
         uni.showToast({ title: '用户未登录', icon: 'none' })
         return
@@ -90,7 +90,7 @@ export default {
       })
     },
     deleteDish(dishId) {
-      const openId = uni.getStorageSync('userid')
+      const openId = uni.getStorageSync('userId')
       if (!openId) {
         uni.showToast({ title: '用户未登录', icon: 'none' })
         return

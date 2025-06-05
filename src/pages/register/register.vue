@@ -51,7 +51,7 @@ export default {
           console.log('注册接口返回：', res)
           if (res.data.status === "200") {
             uni.setStorageSync('token', res.data.token)
-            uni.setStorageSync('userid', this.openid)
+            uni.setStorageSync('userId', this.openid)
     
             uni.showToast({
               title: '注册成功',
